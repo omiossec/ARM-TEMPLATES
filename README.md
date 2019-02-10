@@ -1,2 +1,6 @@
 # ARM-TEMPLATES
-My Arm template
+
+
+This repos contain some of my ARM templates I created 
+
+

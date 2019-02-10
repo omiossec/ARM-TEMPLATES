@@ -1,0 +1,64 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "NetConf": {
+            "type": "array",
+            "metadata": {
+                "description": "Array of Array representing All the virtual netwokr you want to deploy"
+              }
+        }
+    },
+    "variables": {
+        "location": "[resourceGroup().location]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "[concat(copyIndex(),'netconfdeploy', uniqueString(resourceGroup().id))]",
+            "type": "Microsoft.Resources/deployments",
+            "copy": {
+                "name": "Vnets",
+                "count": "[length(parameters('NetConf'))]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2017-10-01",
+                            "type": "Microsoft.Network/virtualNetworks/",
+                            "name": "[parameters('NetConf')[copyIndex('Vnets')].VirtualNetworkName]",
+                            "location": "[variables('location')]",
+
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "[parameters('NetConf')[copyIndex('Vnets')].CIDR]"
+                                    ]
+                                },
+                                "copy": [
+                                    {
+                                        "name": "subnets",
+                                        "count": "[length(parameters('NetConf')[copyIndex('Vnets')].Subnet)]",
+                                        "input": {
+                                            "name": "[parameters('NetConf')[copyIndex('Vnets')].Subnet[copyIndex('subnets')].SubnetName]",
+                                            "properties": {
+                                                "addressPrefix": "[parameters('NetConf')[copyIndex('Vnets')].Subnet[copyIndex('subnets')].Prefix]"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+"outputs": {}
+}

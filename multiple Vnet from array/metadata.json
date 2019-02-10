@@ -1,0 +1,9 @@
+{
+    "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+    "type": "QuickStart",
+    "itemDisplayName": "multiple Vnet from array",
+    "description": "Use an Array of Array to create multiple Vnet with Multiple Subnet in a Resource Group",
+    "summary": "Use an Array of Array to create multiple Vnet with Multiple Subnet in a Resource Group",
+    "githubUsername": "omiossec",
+    "dateUpdated": "2019-02-10"
+  }
